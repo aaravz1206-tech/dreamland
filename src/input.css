@@ -1,0 +1,54 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+@layer utilities {
+  .fade-up {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .fade-up.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .fade-in {
+    opacity: 0;
+    transition: opacity 1s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+  }
+  .delay-1 { transition-delay: 0.2s; }
+  .delay-2 { transition-delay: 0.4s; }
+  
+  .glass-panel {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 p-12 rounded-2xl text-left;
+  }
+  
+  .btn-primary {
+    @apply bg-accent-gold text-black px-6 py-3 rounded-full font-medium transition-all duration-300 inline-block hover:bg-accent-gold-hover hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(212,175,55,0.3)];
+  }
+  
+  .btn-primary.large {
+    @apply px-8 py-4 text-lg;
+  }
+  
+  .btn-outline {
+    @apply bg-transparent text-white border border-white px-6 py-3 rounded-full font-medium transition-all duration-300 inline-block hover:border-accent-gold hover:text-accent-gold;
+  }
+  
+  .btn-whatsapp {
+    @apply bg-[#25D366] text-white px-8 py-4 rounded-full font-medium inline-block transition-all duration-300 w-full text-center mt-6 hover:bg-[#20bd5a] hover:-translate-y-0.5;
+  }
+  
+  .scrolled {
+    @apply bg-[#16161a]/70 backdrop-blur-md border-b border-accent-gold/20 py-4;
+  }
+}
