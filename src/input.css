@@ -51,4 +51,19 @@
   .scrolled {
     @apply bg-[#16161a]/70 backdrop-blur-md border-b border-accent-gold/20 py-4;
   }
+  
+  @keyframes swing {
+    0% { transform: rotate(6deg); }
+    50% { transform: rotate(-6deg); }
+    100% { transform: rotate(6deg); }
+  }
+  .animate-swing {
+    animation: swing 4s ease-in-out infinite;
+    transform-origin: top center;
+  }
+  .animate-swing-delay {
+    animation: swing 4s ease-in-out infinite;
+    animation-delay: -2s;
+    transform-origin: top center;
+  }
 }

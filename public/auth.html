@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Dreamland Tailor Boutique</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-bg-color text-white font-body leading-relaxed min-h-screen flex flex-col">
+    <!-- Navbar -->
+    <nav class="navbar w-full px-6 md:px-12 py-6 flex justify-between items-center border-b border-white/5 bg-[#16161a]/70 backdrop-blur-md absolute top-0 z-50">
+        <a href="index.html" class="logo font-heading text-2xl font-semibold tracking-widest hover:text-accent-gold transition-colors">DREAMLAND<span class="text-accent-gold">.</span></a>
+        <a href="index.html" class="text-sm uppercase tracking-wider transition-colors hover:text-accent-gold">Back to Home</a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="flex-grow flex items-center justify-center pt-24 px-6 md:px-12 pb-12 relative overflow-hidden">
+        <div class="absolute inset-0 bg-[url('images/hero.png')] bg-cover bg-center opacity-10"></div>
+        
+        <div class="glass-panel w-full max-w-4xl flex flex-col md:flex-row rounded-3xl overflow-hidden relative z-10 p-0">
+            <!-- Left Side (Image/Branding) -->
+            <div class="hidden md:flex md:w-1/2 bg-[url('images/showcase.png')] bg-cover bg-center relative items-center justify-center p-12 text-center">
+                <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
+                <div class="relative z-10">
+                    <h2 class="font-heading text-4xl mb-4 text-white">Join the Dreamland Family</h2>
+                    <p class="text-gray-300">Create an account to track your bespoke orders and book priority consultations.</p>
+                </div>
+            </div>
+
+            <!-- Right Side (Forms) -->
+            <div class="w-full md:w-1/2 p-8 md:p-12 bg-surface-color relative">
+                
+                <!-- Login Form -->
+                <div id="loginView" class="animate-fade-in">
+                    <h2 class="font-heading text-3xl mb-2">Welcome Back</h2>
+                    <p class="text-gray-400 mb-8 text-sm">Sign in to your account to continue.</p>
+
+                    <form id="loginForm" class="space-y-4">
+                        <div class="form-group">
+                            <label class="block text-sm text-gray-400 mb-2">Email</label>
+                            <input type="email" id="loginEmail" required class="w-full p-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-accent-gold focus:bg-white/10 text-white font-body">
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-sm text-gray-400 mb-2">Password</label>
+                            <input type="password" id="loginPassword" required class="w-full p-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-accent-gold focus:bg-white/10 text-white font-body">
+                        </div>
+                        <button type="submit" id="loginBtn" class="btn-primary w-full border-none cursor-pointer mt-4">Sign In</button>
+                        <div id="loginMessage" class="text-sm text-center mt-2 hidden"></div>
+                    </form>
+
+                    <p class="text-center text-sm text-gray-400 mt-8">
+                        Don't have an account? <button id="showSignup" class="text-accent-gold hover:underline">Sign up</button>
+                    </p>
+                </div>
+
+                <!-- Signup Form -->
+                <div id="signupView" class="hidden animate-fade-in">
+                    <h2 class="font-heading text-3xl mb-2">Create Account</h2>
+                    <p class="text-gray-400 mb-8 text-sm">Join us to experience premium tailoring.</p>
+
+                    <form id="signupForm" class="space-y-4">
+                        <div class="form-group">
+                            <label class="block text-sm text-gray-400 mb-2">Full Name</label>
+                            <input type="text" id="signupName" required class="w-full p-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-accent-gold focus:bg-white/10 text-white font-body">
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-sm text-gray-400 mb-2">Email</label>
+                            <input type="email" id="signupEmail" required class="w-full p-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-accent-gold focus:bg-white/10 text-white font-body">
+                        </div>
+                        <div class="form-group">
+                            <label class="block text-sm text-gray-400 mb-2">Password</label>
+                            <input type="password" id="signupPassword" required minlength="6" class="w-full p-3 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-accent-gold focus:bg-white/10 text-white font-body">
+                        </div>
+                        <button type="submit" id="signupBtn" class="btn-primary w-full border-none cursor-pointer mt-4">Create Account</button>
+                        <div id="signupMessage" class="text-sm text-center mt-2 hidden"></div>
+                    </form>
+
+                    <p class="text-center text-sm text-gray-400 mt-8">
+                        Already have an account? <button id="showLogin" class="text-accent-gold hover:underline">Sign in</button>
+                    </p>
+                </div>
+
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginView = document.getElementById('loginView');
+            const signupView = document.getElementById('signupView');
+            
+            // Toggles
+            document.getElementById('showSignup').addEventListener('click', () => {
+                loginView.classList.add('hidden');
+                signupView.classList.remove('hidden');
+            });
+            document.getElementById('showLogin').addEventListener('click', () => {
+                signupView.classList.add('hidden');
+                loginView.classList.remove('hidden');
+            });
+
+            // Forms
+            const loginForm = document.getElementById('loginForm');
+            const signupForm = document.getElementById('signupForm');
+            const loginMessage = document.getElementById('loginMessage');
+            const signupMessage = document.getElementById('signupMessage');
+
+            function showMessage(el, text, isError) {
+                el.textContent = text;
+                el.className = `text-sm text-center mt-2 ${isError ? 'text-red-400' : 'text-green-400'}`;
+                el.classList.remove('hidden');
+            }
+
+            // Login logic
+            loginForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('loginBtn');
+                btn.textContent = 'Signing in...';
+                
+                try {
+                    const res = await fetch('/api/auth/login', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            email: document.getElementById('loginEmail').value,
+                            password: document.getElementById('loginPassword').value
+                        })
+                    });
+                    const data = await res.json();
+                    
+                    if (data.success) {
+                        localStorage.setItem('dreamland_token', data.token);
+                        localStorage.setItem('dreamland_user', JSON.stringify(data.user));
+                        window.location.href = 'index.html';
+                    } else {
+                        showMessage(loginMessage, data.message || data.errors[0].msg, true);
+                    }
+                } catch (err) {
+                    showMessage(loginMessage, 'Network error', true);
+                } finally {
+                    btn.textContent = 'Sign In';
+                }
+            });
+
+            // Signup logic
+            signupForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                const btn = document.getElementById('signupBtn');
+                btn.textContent = 'Creating...';
+                
+                try {
+                    const res = await fetch('/api/auth/register', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({
+                            name: document.getElementById('signupName').value,
+                            email: document.getElementById('signupEmail').value,
+                            password: document.getElementById('signupPassword').value
+                        })
+                    });
+                    const data = await res.json();
+                    
+                    if (data.success) {
+                        localStorage.setItem('dreamland_token', data.token);
+                        localStorage.setItem('dreamland_user', JSON.stringify(data.user));
+                        window.location.href = 'index.html';
+                    } else {
+                        showMessage(signupMessage, data.message || data.errors[0].msg, true);
+                    }
+                } catch (err) {
+                    showMessage(signupMessage, 'Network error', true);
+                } finally {
+                    btn.textContent = 'Create Account';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

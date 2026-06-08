@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | Dreamland Tailor Boutique</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-bg-color text-white font-body leading-relaxed min-h-screen flex flex-col">
+    <nav class="navbar w-full px-6 md:px-12 py-6 flex justify-between items-center border-b border-white/5 bg-[#16161a]/70 backdrop-blur-md">
+        <div class="logo font-heading text-2xl font-semibold tracking-widest">DREAMLAND<span class="text-accent-gold">.</span> Admin</div>
+        <div class="nav-links">
+            <a href="index.html" class="text-sm uppercase tracking-wider transition-colors hover:text-accent-gold">Back to Site</a>
+            <button id="logoutBtn" class="ml-6 text-sm uppercase tracking-wider text-red-400 hover:text-red-300 hidden">Logout</button>
+        </div>
+    </nav>
+
+    <main class="flex-grow p-6 md:p-12 max-w-7xl mx-auto w-full">
+        <!-- Login Section -->
+        <div id="loginSection" class="max-w-md mx-auto mt-20 glass-panel">
+            <h2 class="font-heading text-3xl mb-6 text-center text-accent-gold">Admin Login</h2>
+            <form id="loginForm" class="space-y-4">
+                <div class="form-group">
+                    <input type="password" id="adminPassword" placeholder="Enter Admin Password" required class="w-full p-4 bg-white/5 border border-white/10 rounded-xl focus:outline-none focus:border-accent-gold focus:bg-white/10 text-white font-body">
+                </div>
+                <button type="submit" class="btn-primary w-full border-none cursor-pointer">Login</button>
+                <div id="loginError" class="text-red-400 text-sm text-center mt-2 hidden">Invalid password.</div>
+            </form>
+        </div>
+
+        <!-- Dashboard Section -->
+        <div id="dashboardSection" class="hidden">
+            <div class="flex justify-between items-center mb-8">
+                <h1 class="font-heading text-4xl">Consultation Bookings</h1>
+                <button id="refreshBtn" class="btn-outline !py-2 !px-4 !text-sm">Refresh</button>
+            </div>
+            
+            <div class="bg-surface-color rounded-2xl border border-white/5 overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="border-b border-white/10 bg-white/5">
+                                <th class="p-4 font-medium text-accent-gold">Date Requested</th>
+                                <th class="p-4 font-medium text-accent-gold">Name</th>
+                                <th class="p-4 font-medium text-accent-gold">Phone</th>
+                                <th class="p-4 font-medium text-accent-gold">Preferred Date</th>
+                                <th class="p-4 font-medium text-accent-gold">Details</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookingsTableBody">
+                            <!-- Rows will be inserted here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+                <div id="loadingMessage" class="p-8 text-center text-gray-400">Loading bookings...</div>
+                <div id="emptyMessage" class="p-8 text-center text-gray-400 hidden">No bookings found.</div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const loginSection = document.getElementById('loginSection');
+            const dashboardSection = document.getElementById('dashboardSection');
+            const loginForm = document.getElementById('loginForm');
+            const adminPasswordInput = document.getElementById('adminPassword');
+            const loginError = document.getElementById('loginError');
+            const logoutBtn = document.getElementById('logoutBtn');
+            const bookingsTableBody = document.getElementById('bookingsTableBody');
+            const loadingMessage = document.getElementById('loadingMessage');
+            const emptyMessage = document.getElementById('emptyMessage');
+            const refreshBtn = document.getElementById('refreshBtn');
+
+            // Check if already logged in
+            const savedKey = localStorage.getItem('dreamland_admin_key');
+            if (savedKey) {
+                showDashboard(savedKey);
+            }
+
+            // Login submission
+            loginForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const key = adminPasswordInput.value;
+                showDashboard(key);
+            });
+
+            // Logout
+            logoutBtn.addEventListener('click', () => {
+                localStorage.removeItem('dreamland_admin_key');
+                dashboardSection.classList.add('hidden');
+                logoutBtn.classList.add('hidden');
+                loginSection.classList.remove('hidden');
+                adminPasswordInput.value = '';
+            });
+
+            refreshBtn.addEventListener('click', () => {
+                const key = localStorage.getItem('dreamland_admin_key');
+                if (key) fetchBookings(key);
+            });
+
+            function showDashboard(key) {
+                loginError.classList.add('hidden');
+                fetchBookings(key);
+            }
+
+            async function fetchBookings(key) {
+                loadingMessage.classList.remove('hidden');
+                bookingsTableBody.innerHTML = '';
+                emptyMessage.classList.add('hidden');
+
+                try {
+                    const response = await fetch('/api/bookings', {
+                        headers: {
+                            'x-admin-key': key
+                        }
+                    });
+
+                    if (response.status === 401) {
+                        // Invalid password
+                        localStorage.removeItem('dreamland_admin_key');
+                        loginSection.classList.remove('hidden');
+                        dashboardSection.classList.add('hidden');
+                        logoutBtn.classList.add('hidden');
+                        loginError.classList.remove('hidden');
+                        return;
+                    }
+
+                    if (!response.ok) throw new Error('Server error');
+
+                    const data = await response.json();
+                    
+                    // Success login
+                    localStorage.setItem('dreamland_admin_key', key);
+                    loginSection.classList.add('hidden');
+                    dashboardSection.classList.remove('hidden');
+                    logoutBtn.classList.remove('hidden');
+
+                    if (data.data.length === 0) {
+                        emptyMessage.classList.remove('hidden');
+                    } else {
+                        data.data.forEach(booking => {
+                            const tr = document.createElement('tr');
+                            tr.className = 'border-b border-white/5 hover:bg-white/5 transition-colors';
+                            
+                            const createdDate = new Date(booking.created_at).toLocaleString();
+                            const prefDate = new Date(booking.date).toLocaleDateString();
+
+                            tr.innerHTML = `
+                                <td class="p-4 text-sm text-gray-400">${createdDate}</td>
+                                <td class="p-4 font-medium">${booking.name}</td>
+                                <td class="p-4"><a href="tel:${booking.phone}" class="text-accent-gold hover:underline">${booking.phone}</a></td>
+                                <td class="p-4">${prefDate}</td>
+                                <td class="p-4 text-sm text-gray-300 max-w-xs truncate" title="${booking.details || 'None'}">${booking.details || '-'}</td>
+                            `;
+                            bookingsTableBody.appendChild(tr);
+                        });
+                    }
+
+                } catch (error) {
+                    console.error(error);
+                    alert('Failed to connect to the server.');
+                } finally {
+                    loadingMessage.classList.add('hidden');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

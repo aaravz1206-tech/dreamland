@@ -21,7 +21,7 @@ const db = new sqlite3.Database(dbPath, (err) => {
 
 // Initialize tables
 const initializeDb = () => {
-    const createTableQuery = `
+    const createBookingsQuery = `
         CREATE TABLE IF NOT EXISTS bookings (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             name TEXT NOT NULL,
@@ -33,12 +33,32 @@ const initializeDb = () => {
         )
     `;
 
-    db.run(createTableQuery, (err) => {
-        if (err) {
-            console.error('Error creating bookings table:', err.message);
-        } else {
-            console.log('Bookings table is ready.');
-        }
+    const createUsersQuery = `
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            name TEXT NOT NULL,
+            email TEXT NOT NULL UNIQUE,
+            password TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `;
+
+    db.serialize(() => {
+        db.run(createBookingsQuery, (err) => {
+            if (err) {
+                console.error('Error creating bookings table:', err.message);
+            } else {
+                console.log('Bookings table is ready.');
+            }
+        });
+
+        db.run(createUsersQuery, (err) => {
+            if (err) {
+                console.error('Error creating users table:', err.message);
+            } else {
+                console.log('Users table is ready.');
+            }
+        });
     });
 };
 
