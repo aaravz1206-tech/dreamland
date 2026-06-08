@@ -47,7 +47,7 @@ app.post('/api/bookings', [
     const { name, phone, date, details } = req.body;
     const query = `INSERT INTO bookings (name, phone, date, details) VALUES (?, ?, ?, ?)`;
 
-    db.run(query, [name, phone, date.toISOString(), details], function(err) {
+    db.run(query, [name, phone, new Date(date).toISOString(), details], function(err) {
         if (err) {
             console.error('Error inserting booking:', err.message);
             return res.status(500).json({ success: false, message: 'Server error while processing booking' });
@@ -151,12 +151,6 @@ app.post('/api/auth/login', [
         const token = jwt.sign({ id: user.id, name: user.name }, JWT_SECRET, { expiresIn: '7d' });
         res.json({ success: true, token, user: { id: user.id, name: user.name, email: user.email } });
     });
-});
-
-// Global Error Handler
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ success: false, message: 'Internal Server Error' });
 });
 
 // Start Server
